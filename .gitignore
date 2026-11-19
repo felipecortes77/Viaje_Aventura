@@ -158,6 +158,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+viajeaventura.db
 
 # Conda environments
 conda-meta/
