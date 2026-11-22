@@ -82,6 +82,61 @@ Para cambiar a una rama existente:
 git switch main
 ```
 
+## Crear y enviar cambios
+
+Antes de modificar el proyecto, actualiza `main` y crea una rama nueva:
+
+```bash
+git switch main
+git pull origin main
+git switch -c tipo/descripcion-corta
+```
+
+Realiza los cambios, revisa qué archivos modificaste y guarda el trabajo:
+
+```bash
+git status
+git diff
+git add nombre-del-archivo
+git commit -m "tipo: descripcion del cambio"
+git push -u origin tipo/descripcion-corta
+```
+
+Ejemplos de tipos de commit:
+
+- `feature`: agregar una funcionalidad.
+- `fix`: corregir un error.
+- `docs`: actualizar documentación.
+
+Después abre el enlace que Git mostrará al subir la rama o crea un Pull Request
+desde GitHub:
+
+1. Selecciona `main` como rama base.
+2. Selecciona la rama creada como rama de comparación.
+3. Escribe un título y una descripción breve de los cambios.
+4. Presiona **Create pull request**.
+
+## Revisar y aprobar cambios
+
+El creador del repositorio o un colaborador autorizado debe revisar el Pull Request:
+
+1. Abrir **Pull requests** y seleccionar el cambio pendiente.
+2. Revisar la pestaña **Files changed**.
+3. Confirmar que solo se modificaron los archivos relacionados.
+4. Seleccionar **Review changes**.
+5. Elegir **Approve**, **Request changes** o dejar comentarios.
+
+Cuando la revisión quede aprobada, el responsable del repositorio debe presionar
+**Merge pull request** y después **Confirm merge**.
+
+Después de fusionar la rama, puede actualizar su copia local:
+
+```bash
+git switch main
+git pull origin main
+git branch -d tipo/descripcion-corta
+```
+
 ## Requisitos
 
 - Python 3
