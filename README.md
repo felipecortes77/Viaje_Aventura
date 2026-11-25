@@ -1,71 +1,216 @@
-# Viajes Aventura - Sistema de Gestión de Reservas Turísticas
+# Viajes Aventura
 
-Sistema de gestión para la agencia **Viajes Aventura**, diseñado para administrar destinos turísticos, armar paquetes personalizados, controlar la disponibilidad de cupos y gestionar el registro, acceso y reservas de los clientes.
+Proyecto inicial para la gestión de reservas turísticas de **Viajes Aventura**.
+Actualmente incluye la configuración de la conexión a la base de datos y la
+creación del esquema relacional para clientes, destinos, paquetes y reservas.
 
----
+## Estado actual
 
-## Contexto del Proyecto
+La aplicación actualmente:
 
-Este proyecto responde al requerimiento operativo de la agencia **Viajes Aventura**, cubriendo tres módulos fundamentales del negocio:
+- Abre una conexión usando SQLite o MySQL/MariaDB.
+- Activa las claves foráneas cuando se utiliza SQLite.
+- Crea las tablas necesarias para el sistema.
+- Mantiene la relación entre paquetes y destinos mediante una tabla intermedia.
 
-* **Destinos:** Permite registrar, modificar, eliminar y listar los distintos destinos turísticos ofrecidos por la agencia, junto con su país, descripción, precio base y estado.
-* **Paquetes:** Permite combinar múltiples destinos en un mismo paquete, definir fechas de inicio y término, calcular costos totales (incluyendo impuestos y cargos adicionales) y consultar la disponibilidad de cupos en tiempo real.
-* **Reservas y Acceso:** Permite a los clientes registrarse en la plataforma, iniciar sesión de forma segura, reservar cupos en paquetes disponibles y consultar su historial completo de reservas.
+Todavía no están implementados los servicios de registro, autenticación,
+administración de destinos y paquetes, ni la creación y consulta de reservas.
 
----
-
-## Modelo de Datos
-
-Para garantizar que un cliente pueda recuperar y consultar sus reservas en cualquier momento, la base de datos persiste la relación entre el usuario, el paquete adquirido y los detalles de la transacción mediante **5 entidades principales**:
-
-| Tabla | Descripción |
-| :--- | :--- |
-| **`client`** | Almacena la información de acceso y registro de los clientes (`client_id`, `name`, `email`, `password_hash`, `register_date`). |
-| **`destination`** | Contiene el catálogo de destinos disponibles (`destination_id`, `name`, `country`, `description`, `base_price`, `status`). |
-| **`package`** | Define los paquetes turísticos, fechas, cupos totales/disponibles, porcentaje de impuesto (`tax_pct`) y costos. |
-| **`package_destination`** | Tabla intermedia que resuelve la relación muchos a muchos entre paquetes y destinos. |
-| **`reservation`** | Registra cada reserva realizada por un cliente (`reservation_code`, `spots_quantity`, `total_cost`, `reservation_date`, `status`). |
-
----
-
-## Estructura del Proyecto
+## Estructura del proyecto
 
 ```text
-viajes-aventura/
-├── persistance/
-│   ├── connection.py        # Configuración y apertura de conexión (SQLite / MySQL)
-│   └── create_tables.py     # Script de inicialización del esquema de base de datos
-├── models/                  # Clases de dominio (Client, Destination, Package, Reservation)
-├── services/                # Lógica de negocio (cálculo de costos, validación de cupos, auth)
-├── main.py                  # Punto de entrada de la aplicación
-└── README.md                # Documentación del proyecto
+Viaje_Aventura/
+├── .env.example
+├── README.md
+├── requirements.txt
+├── docs/
+│   ├── Modelo fisico y requerimientos.pdf
+│   └── ia.txt
+└── src/
+    ├── main.py
+    └── persistance/
+        ├── connection.py
+        ├── create_db.py
+        └── seed_db.py
 ```
 
----
+## Modelo de datos
 
-## Instalación y Configuración
+El esquema creado por `src/persistance/create_db.py` contiene cinco tablas:
 
-1. **Clonar el repositorio:**
-   ```bash
-   git clone <url-del-repositorio>
-   cd viajes-aventura
-   ```
+| Tabla | Propósito |
+| --- | --- |
+| `client` | Datos del cliente, correo y campo para la contraseña almacenada como hash. |
+| `destination` | Catálogo de destinos, país, descripción, precio base y estado. |
+| `package` | Paquetes, fechas, cupos, impuestos, cargos adicionales y costo total. |
+| `package_destination` | Relación muchos a muchos entre paquetes y destinos. |
+| `reservation` | Cliente, paquete, código, cantidad de cupos, costo, fecha y estado de la reserva. |
 
-2. **Configurar el motor de base de datos:**
-   El sistema soporta ejecución dual para **SQLite** (entorno local/pruebas) y **MySQL/MariaDB** (producción) a través del módulo `persistance/connection.py`.
+Las tablas `package_destination` y `reservation` tienen claves foráneas para
+mantener la integridad de las relaciones.
 
-3. **Inicializar las tablas:**
-   Ejecuta el script de creación de tablas para preparar el esquema antes de iniciar el sistema:
-   ```bash
-   python -m persistance.create_tables
-   ```
-   Si todo se ejecuta correctamente, verás el mensaje:
-   `Base de datos preparada correctamente.`
+## Descargar el proyecto y trabajar con ramas
 
----
+Abre **Git Bash** y ejecuta:
 
-## Funcionalidades Principales
+```bash
+git clone https://github.com/felipecortes77/Viaje_Aventura.git
+cd Viaje_Aventura
+```
 
-* **Seguridad de acceso:** Almacenamiento de contraseñas mediante hash (`password_hash`) y validación de correo único por cliente.
-* **Integridad referencial:** Validación estricta de claves foráneas (`PRAGMA foreign_keys = ON` en SQLite) para evitar reservas huérfanas o paquetes sin destinos válidos.
-* **Trazabilidad de reservas:** Generación de un código único de reserva (`reservation_code`), fecha exacta y estado (`confirmada`, `pendiente`, `cancelada`) para facilitar consultas e historial.
+Para crear una rama nueva y cambiarte a ella:
+
+```bash
+git switch -c tipo/descripcion-corta
+```
+
+Usa el prefijo según el propósito del cambio:
+
+- `feature/`: agregar una funcionalidad.
+- `fix/`: corregir un error.
+- `docs/`: crear o actualizar documentación.
+
+Por ejemplo:
+
+```bash
+git switch -c docs/actualizar-readme
+```
+
+Para cambiar a una rama existente:
+
+```bash
+git switch main
+```
+
+## Crear y enviar cambios
+
+Antes de modificar el proyecto, actualiza `main` y crea una rama nueva:
+
+```bash
+git switch main
+git pull origin main
+git switch -c tipo/descripcion-corta
+```
+
+Realiza los cambios, revisa qué archivos modificaste y guarda el trabajo:
+
+```bash
+git status
+git diff
+git add nombre-del-archivo
+git commit -m "tipo: descripcion del cambio"
+git push -u origin tipo/descripcion-corta
+```
+
+Ejemplos de tipos de commit:
+
+- `feature`: agregar una funcionalidad.
+- `fix`: corregir un error.
+- `docs`: actualizar documentación.
+
+Después abre el enlace que Git mostrará al subir la rama o crea un Pull Request
+desde GitHub:
+
+1. Selecciona `main` como rama base.
+2. Selecciona la rama creada como rama de comparación.
+3. Escribe un título y una descripción breve de los cambios.
+4. Presiona **Create pull request**.
+
+## Revisar y aprobar cambios
+
+El creador del repositorio o un colaborador autorizado debe revisar el Pull Request:
+
+1. Abrir **Pull requests** y seleccionar el cambio pendiente.
+2. Revisar la pestaña **Files changed**.
+3. Confirmar que solo se modificaron los archivos relacionados.
+4. Seleccionar **Review changes**.
+5. Elegir **Approve**, **Request changes** o dejar comentarios.
+
+Cuando la revisión quede aprobada, el responsable del repositorio debe presionar
+**Merge pull request** y después **Confirm merge**.
+
+Después de fusionar la rama, puede actualizar su copia local:
+
+```bash
+git switch main
+git pull origin main
+git branch -d tipo/descripcion-corta
+```
+
+## Requisitos
+
+- Python 3
+- Dependencias incluidas en `requirements.txt`
+- SQLite para desarrollo local, o MySQL/MariaDB para otro entorno
+
+## Instalación
+
+Desde la carpeta raíz del proyecto:
+
+```bash
+python -m venv .venv
+```
+
+En Windows:
+
+```powershell
+.venv\Scripts\activate
+pip install -r requirements.txt
+```
+
+En macOS/Linux:
+
+```bash
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+## Configuración
+
+La configuración se lee desde un archivo `.env`. Se puede partir de
+`.env.example`.
+
+Para SQLite:
+
+```env
+DB_ENGINE=sqlite
+DB_NAME=ecotech.db
+```
+
+Para MySQL:
+
+```env
+DB_ENGINE=mysql
+DB_HOST=localhost
+DB_PORT=3306
+DB_USER=tu_usuario
+DB_PASSWORD=tu_contraseña
+DB_NAME=viajes_aventura
+```
+
+Si no se define `DB_ENGINE`, se utiliza SQLite. En SQLite, si no se define
+`DB_NAME`, el archivo utilizado por defecto es `ecotech.db`.
+
+## Ejecución
+
+Para crear las tablas y comprobar la conexión:
+
+```powershell
+python src\persistance\create_db.py
+```
+
+También se puede ejecutar el punto de entrada actual:
+
+```powershell
+python src\main.py
+```
+
+Ambos comandos ejecutan `create_tables()`. El script de creación de tablas
+informa `Base de datos preparada correctamente.` cuando termina correctamente.
+
+## Dependencias principales
+
+- `python-dotenv`: carga las variables de configuración desde `.env`.
+- `PyMySQL`: conexión con MySQL/MariaDB.
+- `bcrypt`: disponible para el almacenamiento seguro de contraseñas cuando se
+  implemente el módulo de autenticación.
