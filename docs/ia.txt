@@ -2,3 +2,8 @@ Gemini:
 -Utilizado para modificar la base de datos de el proyecto Ecotech y que usara los atributos del boceto de Base de Datos
 -Traducir la base de datos al ingles
 -Crear README.md
+
+Copilot:
+-Se uso el autocompletado de codigo
+-Se uso para actualizar el README.md
+-Se uso para mejorar el CRUD

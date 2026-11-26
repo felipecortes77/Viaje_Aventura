@@ -2,7 +2,7 @@
 
 Proyecto inicial para la gestión de reservas turísticas de **Viajes Aventura**.
 Actualmente incluye la configuración de la conexión a la base de datos y la
-creación del esquema relacional para clientes, destinos, paquetes y reservas.
+creación del esquema relacional para roles, usuarios, destinos, paquetes y reservas.
 
 ## Estado actual
 
@@ -12,6 +12,7 @@ La aplicación actualmente:
 - Activa las claves foráneas cuando se utiliza SQLite.
 - Crea las tablas necesarias para el sistema.
 - Mantiene la relación entre paquetes y destinos mediante una tabla intermedia.
+- Proporciona operaciones CRUD para roles y usuarios mediante sus DAO.
 
 Todavía no están implementados los servicios de registro, autenticación,
 administración de destinos y paquetes, ni la creación y consulta de reservas.
@@ -28,26 +29,36 @@ Viaje_Aventura/
 │   └── ia.txt
 └── src/
     ├── main.py
+    ├── domain/
+    │   ├── role.py
+    │   └── user.py
     └── persistance/
         ├── connection.py
         ├── create_db.py
-        └── seed_db.py
+        ├── role_dao.py
+        ├── seed_db.py
+        └── user_dao.py
 ```
 
 ## Modelo de datos
 
-El esquema creado por `src/persistance/create_db.py` contiene cinco tablas:
+El esquema creado por `src/persistance/create_db.py` contiene seis tablas:
 
 | Tabla | Propósito |
 | --- | --- |
-| `client` | Datos del cliente, correo y campo para la contraseña almacenada como hash. |
+| `role` | Nombre y descripción del rol de cada usuario. |
+| `user` | Rol, nombre, correo, contraseña almacenada como hash y fecha de registro. |
 | `destination` | Catálogo de destinos, país, descripción, precio base y estado. |
 | `package` | Paquetes, fechas, cupos, impuestos, cargos adicionales y costo total. |
 | `package_destination` | Relación muchos a muchos entre paquetes y destinos. |
-| `reservation` | Cliente, paquete, código, cantidad de cupos, costo, fecha y estado de la reserva. |
+| `booking` | Usuario, paquete, código, cantidad de cupos, costo, fecha y estado de la reserva. |
 
-Las tablas `package_destination` y `reservation` tienen claves foráneas para
-mantener la integridad de las relaciones.
+Las clases `RoleDAO` y `UserDAO`, en `src/persistance/`, ofrecen operaciones
+para crear, consultar, actualizar y eliminar registros de las tablas `role`
+y `user`. También permiten buscar roles por nombre y usuarios por correo.
+
+Las tablas `user`, `package_destination` y `booking` tienen claves foráneas
+para mantener la integridad de las relaciones.
 
 ## Descargar el proyecto y trabajar con ramas
 
