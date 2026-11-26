@@ -1,8 +1,12 @@
 from persistance.create_db import create_tables
+from presentation.destination_menu import run_destination_menu
 
 
-def __main__():
+def main():
     create_tables()
-    print("hola")
+    print("Base de datos preparada correctamente.")
+    run_destination_menu()
 
-__main__()
+
+if __name__ == "__main__":
+    main()

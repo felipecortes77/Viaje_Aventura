@@ -12,9 +12,10 @@ La aplicación actualmente:
 - Activa las claves foráneas cuando se utiliza SQLite.
 - Crea las tablas necesarias para el sistema.
 - Mantiene la relación entre paquetes y destinos mediante una tabla intermedia.
+- Permite crear, consultar, actualizar y eliminar destinos desde un menú.
 
 Todavía no están implementados los servicios de registro, autenticación,
-administración de destinos y paquetes, ni la creación y consulta de reservas.
+administración de paquetes, ni la creación y consulta de reservas.
 
 ## Estructura del proyecto
 
@@ -28,10 +29,15 @@ Viaje_Aventura/
 │   └── ia.txt
 └── src/
     ├── main.py
-    └── persistance/
-        ├── connection.py
-        ├── create_db.py
-        └── seed_db.py
+    ├── domain/
+    │   └── destination.py
+    ├── persistance/
+    │   ├── connection.py
+    │   ├── create_db.py
+    │   ├── destination_dao.py
+    │   └── seed_db.py
+    └── presentation/
+        └── destination_menu.py
 ```
 
 ## Modelo de datos
@@ -199,14 +205,14 @@ Para crear las tablas y comprobar la conexión:
 python src\persistance\create_db.py
 ```
 
-También se puede ejecutar el punto de entrada actual:
+Para preparar la base de datos y abrir el menú de destinos:
 
 ```powershell
 python src\main.py
 ```
 
-Ambos comandos ejecutan `create_tables()`. El script de creación de tablas
-informa `Base de datos preparada correctamente.` cuando termina correctamente.
+El programa permite crear, listar, buscar, actualizar y eliminar destinos.
+Selecciona `0` para salir.
 
 ## Dependencias principales
 
